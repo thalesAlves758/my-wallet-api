@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/', authRoutes);
+app.use(authRoutes);
 
 const PORT = process.env.PORT || 5000; /* eslint-disable-line */
 app.listen(PORT, () => {
