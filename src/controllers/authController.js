@@ -100,7 +100,7 @@ async function signIn(req, res) {
   await db.collection('sessions').insertOne(thisSession);
 
   res.locals.session = thisSession.token;
-  res.send({ token: thisSession.token });
+  res.send({ token: thisSession.token, email: user.email, name: user.name });
 }
 
 export default { signUp, signIn };
