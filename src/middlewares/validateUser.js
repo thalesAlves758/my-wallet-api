@@ -28,6 +28,7 @@ async function validateUser(req, res, next) {
     delete user.password;
 
     res.locals.user = user;
+    res.locals.session = session;
 
     next();
   } catch (error) {
