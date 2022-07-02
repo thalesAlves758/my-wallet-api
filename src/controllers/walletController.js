@@ -3,6 +3,9 @@ import Joi from 'joi';
 import db from '../database/mongo.js';
 import httpStatus from '../utils/httpStatus.js';
 
+const ZERO = 0;
+const DECIMALS_PLACES = 2;
+
 async function getWalletByUserId(userId) {
   return db.collection('wallets').findOne({ user_id: userId });
 }
@@ -15,6 +18,12 @@ async function getCashFlowByWalletId(walletId) {
     .find({ wallet_id: walletId })
     .sort({ _id: DESC })
     .toArray();
+}
+
+function toNegative(value) {
+  const MINUS_ONE = -1;
+
+  return MINUS_ONE * Math.abs(value);
 }
 
 async function getWallet(req, res) {
@@ -36,21 +45,19 @@ async function getWallet(req, res) {
   }
 }
 
-async function createInput(req, res) {
-  const ZERO = 0;
-  const DECIMALS_PLACES = 2;
-
+async function createRecord(req, res) {
   const { user } = res.locals;
 
-  const { value, description } = req.body;
+  const { value, description, type } = req.body;
 
   const schema = Joi.object({
     value: Joi.number().precision(DECIMALS_PLACES).greater(ZERO).required(),
+    type: Joi.string().required().valid('input', 'output'),
     description: Joi.string().required(),
   });
 
   const validation = schema.validate(
-    { value, description },
+    { value, description, type },
     { abortEarly: false, convert: false }
   );
 
@@ -74,23 +81,26 @@ async function createInput(req, res) {
     }
 
     await db.collection('cashFlows').insertOne({
-      type: 'input',
+      type,
       description,
       value,
       date: Date.now(),
       wallet_id: wallet._id,
     });
 
+    const newBalance =
+      wallet.balance + (type === 'output' ? toNegative(value) : value);
+
     await db
       .collection('wallets')
-      .updateOne({ _id: wallet._id }, { $inc: { balance: value } });
+      .updateOne({ _id: wallet._id }, { $set: { balance: newBalance } });
 
     const cashFlow = await getCashFlowByWalletId(wallet._id);
 
-    res.send({ balance: wallet.balance + value, cashFlow });
+    res.send({ balance: newBalance, cashFlow });
   } catch (error) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
-export default { getWallet, createInput };
+export default { getWallet, createRecord };
