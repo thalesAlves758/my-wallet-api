@@ -14,12 +14,12 @@ async function getWallet(req, res) {
       return;
     }
 
-    const cashFlows = await db
+    const cashFlow = await db
       .collection('cashFlows')
       .find({ wallet_id: wallet._id })
       .toArray();
 
-    res.send({ balance: wallet.balance, cashFlows });
+    res.send({ balance: wallet.balance, cashFlow });
   } catch (error) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
