@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 
 import httpStatus from '../utils/httpStatus.js';
 import db from '../database/mongo.js';
@@ -49,4 +50,52 @@ async function signUp(req, res) {
   res.sendStatus(httpStatus.CREATED);
 }
 
-export default { signUp };
+async function signIn(req, res) {
+  const { email, password } = req.body;
+
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  });
+
+  const validation = schema.validate(
+    {
+      email,
+      password,
+    },
+    { abortEarly: false }
+  );
+
+  if (validation.error) {
+    const error = {};
+
+    validation.error.details.forEach(({ path, message }) => {
+      error[path] = message;
+    });
+
+    res.status(httpStatus.UNPROCESSABLE_ENTITY).send({ error });
+    return;
+  }
+
+  const user = await db.collection('users').findOne({ email });
+
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    res
+      .status(httpStatus.UNAUTHORIZED)
+      .send({ error: 'Incorrect email or password' });
+
+    return;
+  }
+
+  const thisSession = {
+    token: uuid(),
+    user_id: user._id,
+  };
+
+  await db.collection('sessions').insertOne(thisSession);
+
+  res.locals.session = thisSession.token;
+  res.send({ token: thisSession.token });
+}
+
+export default { signUp, signIn };
