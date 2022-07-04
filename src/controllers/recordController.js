@@ -103,7 +103,7 @@ async function deleteRecord(req, res) {
 
     const deletedRecord = await db
       .collection('cashFlows')
-      .findOneAndDelete({ _id: ObjectId(recordId) });
+      .findOneAndDelete({ _id: ObjectId(recordId), wallet_id: wallet._id });
 
     if (!deletedRecord.value) {
       res.sendStatus(httpStatus.NOT_FOUND);
@@ -140,7 +140,7 @@ async function updateRecord(req, res) {
 
     const oldRecord = await db
       .collection('cashFlows')
-      .findOne({ _id: ObjectId(recordId) });
+      .findOne({ _id: ObjectId(recordId), wallet_id: wallet._id });
 
     if (!oldRecord) {
       res.sendStatus(httpStatus.NOT_FOUND);
