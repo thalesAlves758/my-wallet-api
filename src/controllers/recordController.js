@@ -31,8 +31,9 @@ async function createRecord(req, res) {
 
   const { user } = res.locals;
 
-  const [value, description, type] = sanitizeStrings([
-    req.body.value || '',
+  const { value } = req.body;
+
+  const [description, type] = sanitizeStrings([
     req.body.description || '',
     req.body.type || '',
   ]);
@@ -133,8 +134,9 @@ async function deleteRecord(req, res) {
 async function updateRecord(req, res) {
   const { user } = res.locals;
   const { recordId } = req.params;
+
+  const { value } = req.body;
   const [value, description] = sanitizeStrings([
-    req.body.value || '',
     req.body.description || '',
   ]);
 
