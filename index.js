@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import authRoutes from './src/routes/authRoutes.js';
 import walletRoutes from './src/routes/walletRoutes.js';
+import recordRoutes from './src/routes/recordRoutes.js';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use(authRoutes);
 app.use(walletRoutes);
+app.use(recordRoutes);
 
 const PORT = process.env.PORT || 5000; /* eslint-disable-line */
 app.listen(PORT, () => {
