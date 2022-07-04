@@ -10,5 +10,6 @@ router.delete(
   validateUser,
   recordController.deleteRecord
 );
+router.put('/records/:recordId', validateUser, recordController.updateRecord);
 
 export default router;
