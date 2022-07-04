@@ -3,6 +3,7 @@ import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 import httpStatus from '../utils/httpStatus.js';
 import db from '../database/mongo.js';
+import sanitizeStrings from '../utils/sanitizeStrings.js';
 
 function toNegative(value) {
   const MINUS_ONE = -1;
@@ -30,7 +31,11 @@ async function createRecord(req, res) {
 
   const { user } = res.locals;
 
-  const { value, description, type } = req.body;
+  const [value, description, type] = sanitizeStrings([
+    req.body.value || '',
+    req.body.description || '',
+    req.body.type || '',
+  ]);
 
   const schema = Joi.object({
     value: Joi.number()
@@ -128,7 +133,10 @@ async function deleteRecord(req, res) {
 async function updateRecord(req, res) {
   const { user } = res.locals;
   const { recordId } = req.params;
-  const { value, description } = req.body;
+  const [value, description] = sanitizeStrings([
+    req.body.value || '',
+    req.body.description || '',
+  ]);
 
   try {
     const wallet = await getWalletByUserId(user._id);

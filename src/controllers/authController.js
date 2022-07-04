@@ -1,12 +1,18 @@
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
+import sanitizeStrings from '../utils/sanitizeStrings.js';
 
 import httpStatus from '../utils/httpStatus.js';
 import db from '../database/mongo.js';
 
 async function signUp(req, res) {
-  const { name, email, password, confirmPassword } = req.body;
+  const [name, email, password, confirmPassword] = sanitizeStrings([
+    req.body.name || '',
+    req.body.email || '',
+    req.body.password || '',
+    req.body.confirmPassword || '',
+  ]);
 
   const schema = Joi.object({
     name: Joi.string().required(),
@@ -56,7 +62,10 @@ async function signUp(req, res) {
 }
 
 async function signIn(req, res) {
-  const { email, password } = req.body;
+  const [email, password] = sanitizeStrings([
+    req.body.email || '',
+    req.body.password || '',
+  ]);
 
   const schema = Joi.object({
     email: Joi.string().email().required(),
