@@ -100,7 +100,7 @@ async function createRecord(req, res) {
 
     const cashFlow = await getCashFlowByWalletId(wallet._id);
 
-    res.send({ balance: newBalance, cashFlow });
+    res.status(httpStatus.CREATED).send({ balance: newBalance, cashFlow });
   } catch (error) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
