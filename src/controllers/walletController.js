@@ -3,9 +3,6 @@ import Joi from 'joi';
 import db from '../database/mongo.js';
 import httpStatus from '../utils/httpStatus.js';
 
-const ZERO = 0;
-const DECIMALS_PLACES = 2;
-
 async function getWalletByUserId(userId) {
   return db.collection('wallets').findOne({ user_id: userId });
 }
@@ -46,12 +43,18 @@ async function getWallet(req, res) {
 }
 
 async function createRecord(req, res) {
+  const GREATER_THAN = 0;
+  const DECIMALS_PLACES = 2;
+
   const { user } = res.locals;
 
   const { value, description, type } = req.body;
 
   const schema = Joi.object({
-    value: Joi.number().precision(DECIMALS_PLACES).greater(ZERO).required(),
+    value: Joi.number()
+      .precision(DECIMALS_PLACES)
+      .greater(GREATER_THAN)
+      .required(),
     type: Joi.string().required().valid('input', 'output'),
     description: Joi.string().required(),
   });
