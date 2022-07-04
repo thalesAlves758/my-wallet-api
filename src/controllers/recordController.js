@@ -14,8 +14,17 @@ function getWalletByUserId(userId) {
   return db.collection('wallets').findOne({ user_id: userId });
 }
 
-async function createRecord(req, res) {
+function getCashFlowByWalletId(walletId) {
   const DESC = -1;
+
+  return db
+    .collection('cashFlows')
+    .find({ wallet_id: walletId })
+    .sort({ _id: DESC })
+    .toArray();
+}
+
+async function createRecord(req, res) {
   const GREATER_THAN = 0;
   const DECIMALS_PLACES = 2;
 
@@ -71,11 +80,7 @@ async function createRecord(req, res) {
       .collection('wallets')
       .updateOne({ _id: wallet._id }, { $set: { balance: newBalance } });
 
-    const cashFlow = await db
-      .collection('cashFlows')
-      .find({ wallet_id: wallet._id })
-      .sort({ _id: DESC })
-      .toArray();
+    const cashFlow = await getCashFlowByWalletId(wallet._id);
 
     res.status(httpStatus.CREATED).send({ balance: newBalance, cashFlow });
   } catch (error) {
@@ -120,4 +125,48 @@ async function deleteRecord(req, res) {
   }
 }
 
-export default { createRecord, deleteRecord };
+async function updateRecord(req, res) {
+  const { user } = res.locals;
+  const { recordId } = req.params;
+  const { value, description } = req.body;
+
+  try {
+    const wallet = await getWalletByUserId(user._id);
+
+    if (!wallet) {
+      res.sendStatus(httpStatus.NOT_FOUND);
+      return;
+    }
+
+    const oldRecord = await db
+      .collection('cashFlows')
+      .findOne({ _id: ObjectId(recordId) });
+
+    if (!oldRecord) {
+      res.sendStatus(httpStatus.NOT_FOUND);
+      return;
+    }
+
+    await db
+      .collection('cashFlows')
+      .updateOne({ _id: ObjectId(recordId) }, { $set: { value, description } });
+
+    const newWalletValue =
+      wallet.balance +
+      (oldRecord.type === 'input'
+        ? toNegative(oldRecord.value) + value
+        : oldRecord.value - value);
+
+    await db
+      .collection('wallets')
+      .updateOne({ user_id: user._id }, { $set: { balance: newWalletValue } });
+
+    const cashFlow = await getCashFlowByWalletId(wallet._id);
+
+    res.send({ balance: newWalletValue, cashFlow });
+  } catch (error) {
+    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
+export default { createRecord, deleteRecord, updateRecord };
