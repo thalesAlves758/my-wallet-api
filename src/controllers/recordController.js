@@ -31,11 +31,7 @@ async function createRecord(req, res) {
 
   const { user } = res.locals;
 
-  const [value, description, type] = sanitizeStrings([
-    req.body.value || '',
-    req.body.description || '',
-    req.body.type || '',
-  ]);
+  const { value, description, type } = req.body;
 
   const schema = Joi.object({
     value: Joi.number()
@@ -133,10 +129,7 @@ async function deleteRecord(req, res) {
 async function updateRecord(req, res) {
   const { user } = res.locals;
   const { recordId } = req.params;
-  const [value, description] = sanitizeStrings([
-    req.body.value || '',
-    req.body.description || '',
-  ]);
+  const { value, description } = req.body;
 
   try {
     const wallet = await getWalletByUserId(user._id);
