@@ -59,7 +59,7 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
 
   - Sign up:
   ```http
-    POST /auth/sign-up
+  POST /auth/sign-up
   ```
 
   Body:
@@ -73,8 +73,8 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
 
   Response:
   ```
-    status 201
-    body {}
+  status 201
+  body {}
   ```
 
 <br />
