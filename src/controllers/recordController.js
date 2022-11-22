@@ -3,7 +3,6 @@ import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 import httpStatus from '../utils/httpStatus.js';
 import db from '../database/mongo.js';
-import sanitizeStrings from '../utils/sanitizeStrings.js';
 
 function toNegative(value) {
   const MINUS_ONE = -1;
