@@ -3,8 +3,13 @@ import httpStatus from '../utils/httpStatus.js';
 export function conflictError(message) {
   return {
     statusCode: httpStatus.CONFLICT,
-    message: message ?? 'conflict error',
+    message: message ?? 'Conflict',
   };
 }
 
-export default conflictError;
+export function unauthorizedError(message) {
+  return {
+    statusCode: httpStatus.UNAUTHORIZED,
+    message: message ?? 'Unauthorized',
+  };
+}
