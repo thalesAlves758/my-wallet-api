@@ -1,10 +1,10 @@
 import express from 'express';
 
-import walletController from '../controllers/walletController.js';
-import validateUser from '../middlewares/validateUser.js';
+import getWallet from '../controllers/walletController.js';
+import validateToken from '../middlewares/validateToken.js';
 
 const router = express.Router();
 
-router.get('/wallet', validateUser, walletController.getWallet);
+router.get('/', validateToken, getWallet);
 
 export default router;
