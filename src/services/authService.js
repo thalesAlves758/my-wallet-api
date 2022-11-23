@@ -1,7 +1,11 @@
 import { conflictError, unauthorizedError } from '../errors/httpErrors.js';
-import { create, findByEmail } from '../repositories/userRepository.js';
+import {
+  create,
+  findByEmail,
+  findById,
+} from '../repositories/userRepository.js';
 import { encryptText, compareTexts } from '../utils/bcryptUtils.js';
-import generateToken from '../utils/jwtUtils.js';
+import generateToken, { decodeAndVerifyToken } from '../utils/jwtUtils.js';
 
 export async function signUpUser({ name, email, password }) {
   await validateUserNotExists(email);
@@ -49,4 +53,24 @@ export function validateUserPassword(encryptedPassword, bodyPassword) {
   if (!result) {
     throw unauthorizedError('Incorrect email or password');
   }
+}
+
+export async function getUserByToken(token) {
+  const { userId } = validateToken(token);
+
+  const user = await findById(userId);
+
+  delete user.password;
+
+  return user;
+}
+
+function validateToken(token) {
+  const result = decodeAndVerifyToken(token);
+
+  if (!result) {
+    throw unauthorizedError();
+  }
+
+  return result;
 }
