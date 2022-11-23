@@ -13,3 +13,10 @@ export function unauthorizedError(message) {
     message: message ?? 'Unauthorized',
   };
 }
+
+export function notFoundError(message) {
+  return {
+    statusCode: httpStatus.NOT_FOUND,
+    message: message ?? 'Not found',
+  };
+}
