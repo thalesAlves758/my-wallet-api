@@ -1,8 +1,7 @@
-import Joi from 'joi';
-
 import { ObjectId } from 'mongodb';
 import httpStatus from '../utils/httpStatus.js';
 import db from '../database/mongo.js';
+import newRecord from '../services/recordService.js';
 
 function toNegative(value) {
   const MINUS_ONE = -1;
@@ -24,71 +23,22 @@ function getCashFlowByWalletId(walletId) {
     .toArray();
 }
 
-async function createRecord(req, res) {
-  const GREATER_THAN = 0;
-  const DECIMALS_PLACES = 2;
-
+export async function createRecord(req, res) {
   const { user } = res.locals;
 
   const { value, description, type } = req.body;
 
-  const schema = Joi.object({
-    value: Joi.number()
-      .precision(DECIMALS_PLACES)
-      .greater(GREATER_THAN)
-      .required(),
-    type: Joi.string().required().valid('input', 'output'),
-    description: Joi.string().required(),
+  const result = await newRecord({
+    value,
+    description,
+    type,
+    userId: user._id,
   });
 
-  const validation = schema.validate(
-    { value, description, type },
-    { abortEarly: false, convert: false }
-  );
-
-  if (validation.error) {
-    const error = {};
-
-    validation.error.details.forEach(({ path, message }) => {
-      error[path] = message;
-    });
-
-    res.status(httpStatus.UNPROCESSABLE_ENTITY).send({ error });
-    return;
-  }
-
-  try {
-    const wallet = await getWalletByUserId(user._id);
-
-    if (!wallet) {
-      res.sendStatus(httpStatus.NOT_FOUND);
-      return;
-    }
-
-    await db.collection('cashFlows').insertOne({
-      type,
-      description,
-      value,
-      date: Date.now(),
-      wallet_id: wallet._id,
-    });
-
-    const newBalance =
-      wallet.balance + (type === 'output' ? toNegative(value) : value);
-
-    await db
-      .collection('wallets')
-      .updateOne({ _id: wallet._id }, { $set: { balance: newBalance } });
-
-    const cashFlow = await getCashFlowByWalletId(wallet._id);
-
-    res.status(httpStatus.CREATED).send({ balance: newBalance, cashFlow });
-  } catch (error) {
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-  }
+  res.send(result);
 }
 
-async function deleteRecord(req, res) {
+export async function deleteRecord(req, res) {
   const { user } = res.locals;
 
   const { recordId } = req.params;
@@ -125,7 +75,7 @@ async function deleteRecord(req, res) {
   }
 }
 
-async function updateRecord(req, res) {
+export async function updateRecord(req, res) {
   const { user } = res.locals;
   const { recordId } = req.params;
   const { value, description } = req.body;
@@ -168,5 +118,3 @@ async function updateRecord(req, res) {
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
-
-export default { createRecord, deleteRecord, updateRecord };
