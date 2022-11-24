@@ -17,3 +17,14 @@ export async function create({ email, name, password }) {
     wallet: { balance: 0 },
   });
 }
+
+export async function updateWalletBalance(userId, valueToSum) {
+  return db.collection('users').updateOne(
+    { _id: ObjectId(userId) },
+    {
+      $inc: {
+        'wallet.balance': valueToSum,
+      },
+    }
+  );
+}
