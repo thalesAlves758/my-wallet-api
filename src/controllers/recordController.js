@@ -35,7 +35,7 @@ export async function createRecord(req, res) {
     userId: user._id,
   });
 
-  res.send(result);
+  res.status(httpStatus.CREATED).send(result);
 }
 
 export async function deleteRecord(req, res) {
