@@ -84,12 +84,12 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
   POST /auth/sign-in
   ```
 
-  Body:
+  Request:
 
-  | Body               | Type     | Description                         |
-  | :----------------- | :------- | :---------------------------------- |
-  | `email`            | `string` | **Required**. email of the user     |
-  | `password`         | `string` | **Required**. password of the user  |
+  | Body       | Tipo     | Descrição                          |
+  | :--------- | :------- | :--------------------------------- |
+  | `email`    | `string` | **Required**. email of the user    |
+  | `password` | `string` | **Required**. password of the user |
 
   Response:
   ```
