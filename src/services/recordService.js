@@ -14,7 +14,7 @@ async function createRecord({ value, description, type, userId }) {
   const user = await findById(userId);
 
   return {
-    updatedBalance: user.wallet.balance,
+    balance: user.wallet.balance,
   };
 }
 
