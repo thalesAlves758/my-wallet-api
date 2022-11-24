@@ -72,7 +72,7 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
   | `confirmPassword`  | `string` | **Required**. password confirmation |
 
   Response:
-  ```json
+  ```
   status 201
   body {}
   ```
@@ -92,7 +92,7 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
   | `password`         | `string` | **Required**. password of the user  |
 
   Response:
-  ```json
+  ```
   status 200
   body {
     "_id": "id",
