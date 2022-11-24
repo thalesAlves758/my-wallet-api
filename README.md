@@ -104,3 +104,34 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
     "token": "token jwt"
   }
   ```
+
+  <br />
+
+- Records
+
+  - Criar registro:
+  ```http
+  POST /records
+  ```
+
+  Request:
+
+  | Headers         | Tipo     | Descrição                  |
+  | :-------------- | :------- | :------------------------- |
+  | `Authorization` | `string` | **Obrigatório**. Token JWT |
+
+  | Body          | Tipo     | Descrição                               |
+  | :------------ | :------- | :-------------------------------------- |
+  | `value`       | `number` | **Obrigatório** - valor do registro     |
+  | `type`        | `string` | **Obrigatório** - tipo do registro      |
+  | `description` | `string` | **Obrigatório** - descrição do registro |
+
+  `types válidos: [input, output]`
+
+  Response:
+  ```
+  status 201
+  body {
+    "balance": 0
+  }
+  ```
