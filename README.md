@@ -72,9 +72,35 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
   | `confirmPassword`  | `string` | **Required**. password confirmation |
 
   Response:
-  ```
+  ```json
   status 201
   body {}
   ```
 
-<br />
+  <br />
+
+  - Sign in:
+  ```http
+  POST /auth/sign-in
+  ```
+
+  Body:
+
+  | Body               | Type     | Description                         |
+  | :----------------- | :------- | :---------------------------------- |
+  | `email`            | `string` | **Required**. email of the user     |
+  | `password`         | `string` | **Required**. password of the user  |
+
+  Response:
+  ```json
+  status 200
+  body {
+    "_id": "id",
+    "name": "Usuário",
+    "email": "usuario@email.com",
+    "wallet": {
+      "balance": 0
+    },
+    "token": "token jwt"
+  }
+  ```
