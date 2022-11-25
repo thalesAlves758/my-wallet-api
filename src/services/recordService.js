@@ -1,7 +1,7 @@
 import { notFoundError } from '../errors/httpErrors.js';
 import {
   create,
-  deleteById,
+  deleteByIdAndUserId,
   findByUserId,
   updateById,
 } from '../repositories/recordRepository.js';
@@ -10,10 +10,10 @@ export async function createRecord({ value, description, type, userId }) {
   await create({ value, description, type, userId });
 }
 
-export async function deleteRecordById(recordId) {
-  const result = await deleteById(recordId);
+export async function deleteRecordById(recordId, userId) {
+  const result = await deleteByIdAndUserId(recordId, userId);
 
-  if (!result.value) {
+  if (!result) {
     throw notFoundError('Could not find the specified record');
   }
 }
