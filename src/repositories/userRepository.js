@@ -28,14 +28,3 @@ export async function updateBalance(userId, value) {
     }
   );
 }
-
-export async function incrementBalance(userId, valueToSum) {
-  return db.collection('users').updateOne(
-    { _id: ObjectId(userId) },
-    {
-      $inc: {
-        balance: valueToSum,
-      },
-    }
-  );
-}
