@@ -11,8 +11,12 @@ export async function create({ value, description, type, userId }) {
   });
 }
 
-export async function deleteById(recordId) {
-  return db.collection('records').findOneAndDelete({ _id: ObjectId(recordId) });
+export async function deleteByIdAndUserId(recordId, userId) {
+  const result = await db
+    .collection('records')
+    .findOneAndDelete({ _id: ObjectId(recordId), userId: ObjectId(userId) });
+
+  return result.value;
 }
 
 export async function updateById(recordId, { value, description }) {
