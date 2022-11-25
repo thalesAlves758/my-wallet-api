@@ -3,26 +3,9 @@ import create, {
   deleteById,
   updateById,
 } from '../repositories/recordRepository.js';
-import { findById, incrementBalance } from '../repositories/userRepository.js';
 
 async function createRecord({ value, description, type, userId }) {
   await create({ value, description, type, userId });
-
-  const valueToSum = type === 'input' ? value : toNegative(value);
-
-  await incrementBalance(userId, valueToSum);
-
-  const user = await findById(userId);
-
-  return {
-    balance: user.balance,
-  };
-}
-
-function toNegative(value) {
-  const MINUS_ONE = -1;
-
-  return MINUS_ONE * Math.abs(value);
 }
 
 export async function deleteRecordById(recordId) {
