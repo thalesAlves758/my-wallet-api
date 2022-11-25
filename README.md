@@ -16,6 +16,7 @@ MyWallet é uma aplicação para controle de sua carteira. Nele é possível cad
 - Rest API
 - Node.js
 - Express.js
+- JWT Token
 - MongoDB
 - Repository Pattern
 
@@ -37,7 +38,7 @@ Depois, dentro da pasta, rode o seguinte comando para instalar as dependencias:
 npm install
 ```
 
-Copie e cole o arquivo .env.example, renomeie a cópia para '.env' e preencha as chaves PORT, MONGO_URI e DATABASE_NAME.
+Copie e cole o arquivo .env.example, renomeie a cópia para '.env' e preencha as chaves PORT, MONGO_URI, DATABASE_NAME e JWT_SECRET.
 
 Finalizado o processo, é só inicializar o servidor:
 
@@ -64,12 +65,12 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
 
   Body:
 
-  | Body               | Type     | Description                         |
-  | :----------------- | :------- | :---------------------------------- |
-  | `name`             | `string` | **Required**. name of the user      |
-  | `email`            | `string` | **Required**. email of the user     |
-  | `password`         | `string` | **Required**. password of the user  |
-  | `confirmPassword`  | `string` | **Required**. password confirmation |
+  | Body               | Type     | Description                          |
+  | :----------------- | :------- | :----------------------------------- |
+  | `name`             | `string` | **Required** - name of the user      |
+  | `email`            | `string` | **Required** - email of the user     |
+  | `password`         | `string` | **Required** - password of the user  |
+  | `confirmPassword`  | `string` | **Required** - password confirmation |
 
   Response:
   ```
@@ -86,10 +87,10 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
 
   Request:
 
-  | Body       | Tipo     | Descrição                          |
-  | :--------- | :------- | :--------------------------------- |
-  | `email`    | `string` | **Required**. email of the user    |
-  | `password` | `string` | **Required**. password of the user |
+  | Body       | Tipo     | Descrição                           |
+  | :--------- | :------- | :---------------------------------- |
+  | `email`    | `string` | **Required** - email of the user    |
+  | `password` | `string` | **Required** - password of the user |
 
   Response:
   ```
@@ -106,6 +107,35 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
   <br />
 
 - Records
+  - Listar registros:
+  ```http
+  GET /records
+  ```
+
+  Request:
+
+  | Headers         | Tipo     | Descrição                   |
+  | :-------------- | :------- | :-------------------------- |
+  | `Authorization` | `string` | **Obrigatório** - Token JWT |
+
+  Response:
+  ```
+  status 200
+  body {
+    [
+      {
+        "_id": "id do registro",
+        "type": "input",
+        "description": "descrição",
+        "value": 100000,
+        "date": 1669402059749,
+        "userId": "id do usuário"
+      }
+    ]
+  }
+  ```
+
+  <br />
 
   - Criar registro:
   ```http
@@ -114,9 +144,9 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
 
   Request:
 
-  | Headers         | Tipo     | Descrição                  |
-  | :-------------- | :------- | :------------------------- |
-  | `Authorization` | `string` | **Obrigatório**. Token JWT |
+  | Headers         | Tipo     | Descrição                   |
+  | :-------------- | :------- | :-------------------------- |
+  | `Authorization` | `string` | **Obrigatório** - Token JWT |
 
   | Body          | Tipo     | Descrição                               |
   | :------------ | :------- | :-------------------------------------- |
@@ -129,6 +159,61 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
   Response:
   ```
   status 201
+  body {
+    "balance": 0
+  }
+  ```
+
+  <br />
+
+  - Excluir registro:
+  ```http
+  DELETE /records/:recordId
+  ```
+
+  Request:
+
+  | Params     | Tipo     | Descrição                        |
+  | :--------- | :------- | :------------------------------- |
+  | `recordId` | `string` | **Obrigatório** - Id do registro |
+
+  | Headers         | Tipo     | Descrição                   |
+  | :-------------- | :------- | :-------------------------- |
+  | `Authorization` | `string` | **Obrigatório** - Token JWT |
+
+  Response:
+  ```
+  status 200
+  body {
+    "balance": 0
+  }
+  ```
+
+  <br />
+
+  - Atualizar registro:
+  ```http
+  PUT /records/:recordId
+  ```
+
+  Request:
+
+  | Params     | Tipo     | Descrição                        |
+  | :--------- | :------- | :------------------------------- |
+  | `recordId` | `string` | **Obrigatório** - Id do registro |
+
+  | Headers         | Tipo     | Descrição                   |
+  | :-------------- | :------- | :-------------------------- |
+  | `Authorization` | `string` | **Obrigatório** - Token JWT |
+
+  | Body          | Tipo     | Descrição                               |
+  | :------------ | :------- | :-------------------------------------- |
+  | `value`       | `number` | **Obrigatório** - valor do registro     |
+  | `description` | `string` | **Obrigatório** - descrição do registro |
+
+  Response:
+  ```
+  status 200
   body {
     "balance": 0
   }
