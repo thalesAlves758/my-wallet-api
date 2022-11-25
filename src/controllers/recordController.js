@@ -21,11 +21,13 @@ export async function createRecord(req, res) {
 }
 
 export async function deleteRecord(req, res) {
+  const { user } = res.locals;
   const { recordId } = req.params;
 
   await deleteRecordById(recordId);
+  const result = await updateUserBalance(user._id);
 
-  res.sendStatus(httpStatus.NO_CONTENT);
+  res.status(httpStatus.OK).send(result);
 }
 
 export async function updateRecord(req, res) {
