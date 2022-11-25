@@ -19,13 +19,19 @@ export async function deleteByIdAndUserId(recordId, userId) {
   return result.value;
 }
 
-export async function updateById(recordId, { value, description }) {
-  return db
+export async function updateByIdAndUserId(
+  recordId,
+  userId,
+  { value, description }
+) {
+  const result = await db
     .collection('records')
     .findOneAndUpdate(
-      { _id: ObjectId(recordId) },
+      { _id: ObjectId(recordId), userId: ObjectId(userId) },
       { $set: { value, description } }
     );
+
+  return result.value;
 }
 
 export async function findByUserId(userId) {

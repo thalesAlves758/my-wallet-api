@@ -47,7 +47,7 @@ export async function updateRecord(req, res) {
   const { recordId } = req.params;
   const { value, description } = req.body;
 
-  await updateRecordById(recordId, { value, description });
+  await updateRecordById(recordId, user._id, { value, description });
   const result = await updateUserBalance(user._id);
 
   res.status(httpStatus.OK).send(result);
