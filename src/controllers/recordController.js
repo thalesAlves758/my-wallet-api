@@ -2,9 +2,18 @@ import httpStatus from '../utils/httpStatus.js';
 import {
   createRecord as newRecord,
   deleteRecordById,
+  findRecordsByUserId,
   updateRecordById,
 } from '../services/recordService.js';
 import updateUserBalance from '../services/userService.js';
+
+export async function getRecords(req, res) {
+  const { user } = res.locals;
+
+  const result = await findRecordsByUserId(user._id);
+
+  res.send(result);
+}
 
 export async function createRecord(req, res) {
   const { user } = res.locals;
