@@ -7,11 +7,17 @@ import {
 import validateToken from '../middlewares/validateToken.js';
 import validateSchema from '../middlewares/validateSchema.js';
 import recordSchema from '../schemas/recordSchema.js';
+import updateRecordSchema from '../schemas/updateRecordSchema.js';
 
 const router = express.Router();
 
 router.post('/', validateToken, validateSchema(recordSchema), createRecord);
 router.delete('/:recordId', validateToken, deleteRecord);
-router.put('/records/:recordId', validateToken, updateRecord);
+router.put(
+  '/:recordId',
+  validateToken,
+  validateSchema(updateRecordSchema),
+  updateRecord
+);
 
 export default router;
