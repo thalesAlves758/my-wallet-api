@@ -98,9 +98,7 @@ E prontinho, o projeto estará rodando localmente na sua máquina.
     "_id": "id",
     "name": "Usuário",
     "email": "usuario@email.com",
-    "wallet": {
-      "balance": 0
-    },
+    "balance": 0,
     "token": "token jwt"
   }
   ```

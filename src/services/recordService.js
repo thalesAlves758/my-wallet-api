@@ -1,20 +1,17 @@
 import create from '../repositories/recordRepository.js';
-import {
-  findById,
-  updateWalletBalance,
-} from '../repositories/userRepository.js';
+import { findById, updateBalance } from '../repositories/userRepository.js';
 
 async function createRecord({ value, description, type, userId }) {
   await create({ value, description, type, userId });
 
   const valueToSum = type === 'input' ? value : toNegative(value);
 
-  await updateWalletBalance(userId, valueToSum);
+  await updateBalance(userId, valueToSum);
 
   const user = await findById(userId);
 
   return {
-    balance: user.wallet.balance,
+    balance: user.balance,
   };
 }
 

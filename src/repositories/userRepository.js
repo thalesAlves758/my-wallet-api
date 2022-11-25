@@ -14,16 +14,16 @@ export async function create({ email, name, password }) {
     name,
     email,
     password,
-    wallet: { balance: 0 },
+    balance: 0,
   });
 }
 
-export async function updateWalletBalance(userId, valueToSum) {
+export async function updateBalance(userId, valueToSum) {
   return db.collection('users').updateOne(
     { _id: ObjectId(userId) },
     {
       $inc: {
-        'wallet.balance': valueToSum,
+        balance: valueToSum,
       },
     }
   );
