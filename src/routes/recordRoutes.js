@@ -11,7 +11,7 @@ import recordSchema from '../schemas/recordSchema.js';
 const router = express.Router();
 
 router.post('/', validateToken, validateSchema(recordSchema), createRecord);
-router.delete('/records/:recordId', validateToken, deleteRecord);
+router.delete('/:recordId', validateToken, deleteRecord);
 router.put('/records/:recordId', validateToken, updateRecord);
 
 export default router;
