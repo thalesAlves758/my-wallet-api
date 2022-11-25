@@ -1,5 +1,6 @@
 import { notFoundError } from '../errors/httpErrors.js';
-import create, {
+import {
+  create,
   deleteById,
   updateById,
 } from '../repositories/recordRepository.js';

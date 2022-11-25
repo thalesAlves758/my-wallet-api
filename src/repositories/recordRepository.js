@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import db from '../database/mongo.js';
 
-async function create({ value, description, type, userId }) {
+export async function create({ value, description, type, userId }) {
   return db.collection('records').insertOne({
     type,
     description,
@@ -30,5 +30,3 @@ export async function findByUserId(userId) {
     .find({ userId: ObjectId(userId) })
     .toArray();
 }
-
-export default create;
