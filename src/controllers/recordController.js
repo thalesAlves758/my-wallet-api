@@ -1,5 +1,6 @@
 import httpStatus from '../utils/httpStatus.js';
-import newRecord, {
+import {
+  createRecord as newRecord,
   deleteRecordById,
   updateRecordById,
 } from '../services/recordService.js';

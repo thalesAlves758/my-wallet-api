@@ -5,7 +5,7 @@ import {
   updateById,
 } from '../repositories/recordRepository.js';
 
-async function createRecord({ value, description, type, userId }) {
+export async function createRecord({ value, description, type, userId }) {
   await create({ value, description, type, userId });
 }
 
@@ -34,5 +34,3 @@ export function sumRecordsValues(records) {
     INITIAL_TOTAL
   );
 }
-
-export default createRecord;
