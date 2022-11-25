@@ -3,7 +3,7 @@ import {
   create,
   deleteByIdAndUserId,
   findByUserId,
-  updateById,
+  updateByIdAndUserId,
 } from '../repositories/recordRepository.js';
 
 export async function createRecord({ value, description, type, userId }) {
@@ -18,10 +18,17 @@ export async function deleteRecordById(recordId, userId) {
   }
 }
 
-export async function updateRecordById(recordId, { value, description }) {
-  const result = await updateById(recordId, { value, description });
+export async function updateRecordById(
+  recordId,
+  userId,
+  { value, description }
+) {
+  const result = await updateByIdAndUserId(recordId, userId, {
+    value,
+    description,
+  });
 
-  if (!result.value) {
+  if (!result) {
     throw notFoundError('Could not find the specified record');
   }
 }
