@@ -11,4 +11,8 @@ async function create({ value, description, type, userId }) {
   });
 }
 
+export async function deleteById(recordId) {
+  return db.collection('records').findOneAndDelete({ _id: ObjectId(recordId) });
+}
+
 export default create;
