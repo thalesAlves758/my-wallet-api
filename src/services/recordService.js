@@ -2,6 +2,7 @@ import { notFoundError } from '../errors/httpErrors.js';
 import {
   create,
   deleteById,
+  findByUserId,
   updateById,
 } from '../repositories/recordRepository.js';
 
@@ -33,4 +34,8 @@ export function sumRecordsValues(records) {
       type === 'input' ? totalValue + value : totalValue - value,
     INITIAL_TOTAL
   );
+}
+
+export async function findRecordsByUserId(userId) {
+  return findByUserId(userId);
 }
