@@ -18,7 +18,18 @@ export async function create({ email, name, password }) {
   });
 }
 
-export async function updateBalance(userId, valueToSum) {
+export async function updateBalance(userId, value) {
+  return db.collection('users').updateOne(
+    { _id: ObjectId(userId) },
+    {
+      $set: {
+        balance: value,
+      },
+    }
+  );
+}
+
+export async function incrementBalance(userId, valueToSum) {
   return db.collection('users').updateOne(
     { _id: ObjectId(userId) },
     {
