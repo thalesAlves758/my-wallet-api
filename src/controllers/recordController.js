@@ -36,7 +36,7 @@ export async function deleteRecord(req, res) {
   const { user } = res.locals;
   const { recordId } = req.params;
 
-  await deleteRecordById(recordId);
+  await deleteRecordById(recordId, user._id);
   const result = await updateUserBalance(user._id);
 
   res.status(httpStatus.OK).send(result);
