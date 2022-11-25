@@ -24,4 +24,11 @@ export async function updateById(recordId, { value, description }) {
     );
 }
 
+export async function findByUserId(userId) {
+  return db
+    .collection('records')
+    .find({ userId: ObjectId(userId) })
+    .toArray();
+}
+
 export default create;
