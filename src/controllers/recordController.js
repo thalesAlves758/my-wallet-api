@@ -10,12 +10,14 @@ export async function createRecord(req, res) {
 
   const { value, description, type } = req.body;
 
-  const result = await newRecord({
+  await newRecord({
     value,
     description,
     type,
     userId: user._id,
   });
+
+  const result = await updateUserBalance(user._id);
 
   res.status(httpStatus.CREATED).send(result);
 }
