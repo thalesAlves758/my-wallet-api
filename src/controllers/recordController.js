@@ -1,27 +1,9 @@
-import { ObjectId } from 'mongodb';
 import httpStatus from '../utils/httpStatus.js';
-import db from '../database/mongo.js';
-import newRecord, { deleteRecordById } from '../services/recordService.js';
-
-function toNegative(value) {
-  const MINUS_ONE = -1;
-
-  return MINUS_ONE * Math.abs(value);
-}
-
-function getWalletByUserId(userId) {
-  return db.collection('wallets').findOne({ user_id: userId });
-}
-
-function getCashFlowByWalletId(walletId) {
-  const DESC = -1;
-
-  return db
-    .collection('cashFlows')
-    .find({ wallet_id: walletId })
-    .sort({ _id: DESC })
-    .toArray();
-}
+import newRecord, {
+  deleteRecordById,
+  updateRecordById,
+} from '../services/recordService.js';
+import updateUserBalance from '../services/userService.js';
 
 export async function createRecord(req, res) {
   const { user } = res.locals;
@@ -51,41 +33,8 @@ export async function updateRecord(req, res) {
   const { recordId } = req.params;
   const { value, description } = req.body;
 
-  try {
-    const wallet = await getWalletByUserId(user._id);
+  await updateRecordById(recordId, { value, description });
+  const result = await updateUserBalance(user._id);
 
-    if (!wallet) {
-      res.sendStatus(httpStatus.NOT_FOUND);
-      return;
-    }
-
-    const oldRecord = await db
-      .collection('cashFlows')
-      .findOne({ _id: ObjectId(recordId), wallet_id: wallet._id });
-
-    if (!oldRecord) {
-      res.sendStatus(httpStatus.NOT_FOUND);
-      return;
-    }
-
-    await db
-      .collection('cashFlows')
-      .updateOne({ _id: ObjectId(recordId) }, { $set: { value, description } });
-
-    const newWalletValue =
-      wallet.balance +
-      (oldRecord.type === 'input'
-        ? toNegative(oldRecord.value) + value
-        : oldRecord.value - value);
-
-    await db
-      .collection('wallets')
-      .updateOne({ user_id: user._id }, { $set: { balance: newWalletValue } });
-
-    const cashFlow = await getCashFlowByWalletId(wallet._id);
-
-    res.send({ balance: newWalletValue, cashFlow });
-  } catch (error) {
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-  }
+  res.status(httpStatus.OK).send(result);
 }
