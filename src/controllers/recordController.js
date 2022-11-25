@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import httpStatus from '../utils/httpStatus.js';
 import db from '../database/mongo.js';
-import newRecord from '../services/recordService.js';
+import newRecord, { deleteRecordById } from '../services/recordService.js';
 
 function toNegative(value) {
   const MINUS_ONE = -1;
@@ -39,40 +39,11 @@ export async function createRecord(req, res) {
 }
 
 export async function deleteRecord(req, res) {
-  const { user } = res.locals;
-
   const { recordId } = req.params;
 
-  try {
-    const wallet = await getWalletByUserId(user._id);
+  await deleteRecordById(recordId);
 
-    if (!wallet) {
-      res.sendStatus(httpStatus.NOT_FOUND);
-      return;
-    }
-
-    const deletedRecord = await db
-      .collection('cashFlows')
-      .findOneAndDelete({ _id: ObjectId(recordId), wallet_id: wallet._id });
-
-    if (!deletedRecord.value) {
-      res.sendStatus(httpStatus.NOT_FOUND);
-      return;
-    }
-
-    const { type: recordType, value } = deletedRecord.value;
-
-    const newWalletValue =
-      wallet.balance + (recordType === 'input' ? toNegative(value) : value);
-
-    await db
-      .collection('wallets')
-      .updateOne({ user_id: user._id }, { $set: { balance: newWalletValue } });
-
-    res.sendStatus(httpStatus.NO_CONTENT);
-  } catch (error) {
-    res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-  }
+  res.sendStatus(httpStatus.NO_CONTENT);
 }
 
 export async function updateRecord(req, res) {
