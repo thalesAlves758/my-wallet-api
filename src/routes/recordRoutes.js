@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  getRecords,
   createRecord,
   deleteRecord,
   updateRecord,
@@ -11,6 +12,7 @@ import updateRecordSchema from '../schemas/updateRecordSchema.js';
 
 const router = express.Router();
 
+router.get('/', validateToken, getRecords);
 router.post('/', validateToken, validateSchema(recordSchema), createRecord);
 router.delete('/:recordId', validateToken, deleteRecord);
 router.put(
